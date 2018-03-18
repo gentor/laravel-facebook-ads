@@ -1,0 +1,21 @@
+{
+    "name": "gentor/laravel-facebook-ads",
+    "description": "Facebook Marketing API for Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Evgeni Nurkov",
+            "email": "evgeni.nurkov@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">= 7.0",
+        "illuminate/support": "5.*",
+        "facebook/php-ads-sdk": "^2.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gentor\\LaravelFacebookAds\\": "src/"
+        }
+    }
+}
