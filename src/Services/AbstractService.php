@@ -17,14 +17,39 @@ abstract class AbstractService
     /**
      * @var AbstractCrudObject|\FacebookAds\Object\AdAccount
      */
-    protected $facebookObject;
+    public $facebookObject;
 
     /**
-     * @return AbstractCrudObject
+     * @param string $name
+     * @return mixed
+     * @throws \InvalidArgumentException
      */
-    public function get()
+    public function __get($name)
     {
-        return $this->facebookObject;
+        if (array_key_exists($name, $this->facebookObject->getData())) {
+            return $this->facebookObject->getData()[$name];
+        } else {
+            throw new \InvalidArgumentException(
+                $name . ' is not a field of ' . get_class($this));
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->facebookObject->getData();
+    }
+
+    /**
+     * @return $this
+     */
+    public function loadInfo()
+    {
+        $this->facebookObject = $this->read();
+
+        return $this;
     }
 
     /**

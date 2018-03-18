@@ -12,18 +12,17 @@ use Illuminate\Support\Collection;
 class AdAccount extends AbstractService
 {
     /**
-     * @var \FacebookAds\Object\AdAccount
-     */
-    protected $facebookObject;
-
-    /**
      * AdAccount constructor.
-     * @param $accountId
+     * @param $account
      */
-    public function __construct($accountId)
+    public function __construct($account)
     {
-        $this->prepareAccountId($accountId);
-        $this->facebookObject = new \FacebookAds\Object\AdAccount($accountId);
+        if (is_object($account)) {
+            $this->facebookObject = $account;
+        } else {
+            $this->prepareAccountId($account);
+            $this->facebookObject = new \FacebookAds\Object\AdAccount($account);
+        }
     }
 
     /**

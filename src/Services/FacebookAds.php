@@ -28,7 +28,7 @@ class FacebookAds
 
     /**
      * @param $accountId
-     * @return AdAccount
+     * @return \Gentor\LaravelFacebookAds\Services\AdAccount
      */
     public function adAccount($accountId)
     {
@@ -36,7 +36,7 @@ class FacebookAds
     }
 
     /**
-     * @return AdAccounts
+     * @return \Gentor\LaravelFacebookAds\Services\AdAccounts
      */
     public function adAccounts()
     {
