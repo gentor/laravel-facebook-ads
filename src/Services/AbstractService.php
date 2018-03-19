@@ -4,7 +4,6 @@ namespace Gentor\LaravelFacebookAds\Services;
 
 use FacebookAds\Cursor;
 use FacebookAds\Object\AbstractCrudObject;
-use FacebookAds\Object\AdsInsights;
 use FacebookAds\Object\Fields\AdAccountFields;
 use FacebookAds\Object\Fields\AdSetFields;
 use Illuminate\Support\Collection;
@@ -68,29 +67,6 @@ abstract class AbstractService
     }
 
     /**
-     * @param string[] $fields Fields to request
-     * @param array $params Additional request parameters
-     * @param bool $pending
-     * @return Collection
-     *
-     * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/adsets/
-     */
-    public function insights($fields = ['all'], array $params = [], $pending = false)
-    {
-        $this->prepareFields($fields, AdsInsights::class);
-
-        if (empty($params)) {
-            $params = [
-                'date_preset' => 'this_month'
-            ];
-        }
-
-        $response = $this->facebookObject->getInsights($fields, $params, $pending);
-
-        return $this->response($response);
-    }
-
-    /**
      * Transform a FacebookAds\Cursor object into a Collection.
      *
      * @param Cursor $response
@@ -100,6 +76,11 @@ abstract class AbstractService
     public function response(Cursor $response, $class = null)
     {
         $data = new Collection();
+
+        while ($response->getNext()) {
+            $response->fetchAfter();
+        }
+
         while ($response->current()) {
             if (!$class) {
                 $data->push($response->current());

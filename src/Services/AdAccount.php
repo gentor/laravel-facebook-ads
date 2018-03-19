@@ -2,6 +2,9 @@
 
 namespace Gentor\LaravelFacebookAds\Services;
 
+use Gentor\LaravelFacebookAds\Traits\HasAds;
+use Gentor\LaravelFacebookAds\Traits\HasAdSets;
+use Gentor\LaravelFacebookAds\Traits\HasInsights;
 use Illuminate\Support\Collection;
 
 
@@ -11,6 +14,8 @@ use Illuminate\Support\Collection;
  */
 class AdAccount extends AbstractService
 {
+    use HasAds, HasAdSets, HasInsights;
+
     /**
      * AdAccount constructor.
      * @param $account
@@ -23,45 +28,6 @@ class AdAccount extends AbstractService
             $this->prepareAccountId($account);
             $this->facebookObject = new \FacebookAds\Object\AdAccount($account);
         }
-    }
-
-    /**
-     * @param string[] $fields Fields to request
-     * @param array $params Additional request parameters
-     * @param bool $pending
-     * @return Collection
-     *
-     * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/ads/
-     */
-    public function ads($fields = ['all'], array $params = [], $pending = false)
-    {
-        $this->prepareFields($fields, \FacebookAds\Object\Ad::class);
-        $response = $this->facebookObject->getAds($fields, $params, $pending);
-
-        return $this->response($response, Ad::class);
-    }
-
-    /**
-     * @param string[] $fields Fields to request
-     * @param array $params Additional request parameters
-     * @param bool $pending
-     * @return Collection
-     *
-     * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/adsets/
-     */
-    public function adSets($fields = ['all'], array $params = [], $pending = false)
-    {
-        $this->prepareFields($fields, \FacebookAds\Object\AdSet::class);
-
-        if (empty($params)) {
-            $params = [
-                'date_preset' => 'this_month'
-            ];
-        }
-
-        $response = $this->facebookObject->getAdSets($fields, $params, $pending);
-
-        return $this->response($response, AdSet::class);
     }
 
     /**
