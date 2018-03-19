@@ -6,6 +6,7 @@ use FacebookAds\Cursor;
 use FacebookAds\Object\AbstractCrudObject;
 use FacebookAds\Object\AdsInsights;
 use FacebookAds\Object\Fields\AdAccountFields;
+use FacebookAds\Object\Fields\AdSetFields;
 use Illuminate\Support\Collection;
 
 /**
@@ -125,7 +126,10 @@ abstract class AbstractService
         if (isset($fields[0]) && 'all' == $fields[0]) {
             /** @var AbstractCrudObject $class */
             $fields = array_filter($class::getFields(), function ($value) {
-                return !in_array($value, [AdAccountFields::SHOW_CHECKOUT_EXPERIENCE]);
+                return !in_array($value, [
+                    AdAccountFields::SHOW_CHECKOUT_EXPERIENCE,
+                    AdSetFields::DAILY_IMPS,
+                ]);
             });
         }
     }

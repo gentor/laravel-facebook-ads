@@ -33,7 +33,7 @@ class AdAccount extends AbstractService
      *
      * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/ads/
      */
-    public function ads($fields = ['all'], array $params = ['all'], $pending = false)
+    public function ads($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\Ad::class);
         $response = $this->facebookObject->getAds($fields, $params, $pending);
@@ -47,9 +47,32 @@ class AdAccount extends AbstractService
      * @param bool $pending
      * @return Collection
      *
+     * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/adsets/
+     */
+    public function adSets($fields = ['all'], array $params = [], $pending = false)
+    {
+        $this->prepareFields($fields, \FacebookAds\Object\AdSet::class);
+
+        if (empty($params)) {
+            $params = [
+                'date_preset' => 'this_month'
+            ];
+        }
+
+        $response = $this->facebookObject->getAdSets($fields, $params, $pending);
+
+        return $this->response($response, AdSet::class);
+    }
+
+    /**
+     * @param string[] $fields Fields to request
+     * @param array $params Additional request parameters
+     * @param bool $pending
+     * @return Collection
+     *
      * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/campaigns/
      */
-    public function campaigns($fields = ['all'], array $params = ['all'], $pending = false)
+    public function campaigns($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\Campaign::class);
         $response = $this->facebookObject->getCampaigns($fields, $params, $pending);
