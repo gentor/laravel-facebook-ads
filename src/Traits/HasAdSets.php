@@ -6,6 +6,12 @@ namespace Gentor\LaravelFacebookAds\Traits;
 use Gentor\LaravelFacebookAds\Services\AdSet;
 use Illuminate\Support\Collection;
 
+/**
+ * Trait HasAdSets
+
+ * @property \FacebookAds\Object\AdAccount $facebookObject
+ * @package Gentor\LaravelFacebookAds\Traits
+ */
 trait HasAdSets
 {
     /**
@@ -19,13 +25,6 @@ trait HasAdSets
     public function adSets($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\AdSet::class);
-
-        if (empty($params)) {
-            $params = [
-                'date_preset' => 'this_month'
-            ];
-        }
-
         $response = $this->facebookObject->getAdSets($fields, $params, $pending);
 
         return $this->response($response, AdSet::class);

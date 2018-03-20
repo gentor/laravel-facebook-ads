@@ -4,15 +4,20 @@ namespace Gentor\LaravelFacebookAds\Traits;
 
 
 use FacebookAds\Object\AdsInsights;
-use Illuminate\Support\Collection;
 
+/**
+ * Trait HasInsights
+
+ * @property \FacebookAds\Object\AdAccount $facebookObject
+ * @package Gentor\LaravelFacebookAds\Traits
+ */
 trait HasInsights
 {
     /**
      * @param string[] $fields Fields to request
      * @param array $params Additional request parameters
      * @param bool $pending
-     * @return Collection
+     * @return bool|\FacebookAds\Object\AdsInsights
      *
      * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/insights/
      */
@@ -20,14 +25,6 @@ trait HasInsights
     {
         $this->prepareFields($fields, AdsInsights::class);
 
-        if (empty($params)) {
-            $params = [
-                'date_preset' => 'this_month'
-            ];
-        }
-
-        $response = $this->facebookObject->getInsights($fields, $params, $pending);
-
-        return $this->response($response);
+        return $this->facebookObject->getInsights($fields, $params, $pending)->current();
     }
 }

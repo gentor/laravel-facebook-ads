@@ -10,6 +10,8 @@ use Illuminate\Support\Collection;
 
 /**
  * Class AdAccount
+ *
+ * @property \FacebookAds\Object\AdAccount $facebookObject
  * @package Gentor\LaravelFacebookAds\Services
  */
 class AdAccount extends AbstractService

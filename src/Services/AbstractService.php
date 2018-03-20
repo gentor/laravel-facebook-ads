@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 abstract class AbstractService
 {
     /**
-     * @var AbstractCrudObject|\FacebookAds\Object\AdAccount
+     * @var AbstractCrudObject
      */
     public $facebookObject;
 
@@ -57,7 +57,7 @@ abstract class AbstractService
      *
      * @param string[] $fields Fields to request
      * @param array $params Additional request parameters
-     * @return \FacebookAds\Object\AdAccount
+     * @return \FacebookAds\Object\AbstractCrudObject
      */
     public function read(array $fields = ['all'], array $params = [])
     {
