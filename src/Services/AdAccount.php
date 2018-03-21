@@ -18,18 +18,16 @@ class AdAccount extends AbstractService
 {
     use HasAds, HasAdSets, HasInsights;
 
+    protected $facebookClass = \FacebookAds\Object\AdAccount::class;
+
     /**
      * AdAccount constructor.
-     * @param $account
+     * @param $node
      */
-    public function __construct($account)
+    public function __construct($node = null)
     {
-        if (is_object($account)) {
-            $this->facebookObject = $account;
-        } else {
-            $this->prepareAccountId($account);
-            $this->facebookObject = new \FacebookAds\Object\AdAccount($account);
-        }
+        $this->prepareAccountId($node);
+        parent::__construct($node);
     }
 
     /**
@@ -53,9 +51,11 @@ class AdAccount extends AbstractService
      */
     protected function prepareAccountId(&$accountId)
     {
-        $prefix = 'act_';
-        if (false === stripos($accountId, $prefix)) {
-            $accountId = $prefix . $accountId;
+        if (!is_object($accountId)) {
+            $prefix = 'act_';
+            if (false === stripos($accountId, $prefix)) {
+                $accountId = $prefix . $accountId;
+            }
         }
     }
 }

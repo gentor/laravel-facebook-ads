@@ -20,11 +20,11 @@ class AdAccounts extends AbstractService
     /**
      * AdAccounts constructor.
      *
-     * @param $facebookUserId
+     * @param $facebookUserNode
      */
-    public function __construct($facebookUserId)
+    public function __construct($facebookUserNode)
     {
-        $this->user = new AdAccountUser($facebookUserId);
+        $this->user = new AdAccountUser($facebookUserNode);
     }
 
     /**
@@ -36,7 +36,7 @@ class AdAccounts extends AbstractService
      *
      * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account
      */
-    public function get(array $fields = ['all'], array $params = [])
+    public function all(array $fields = ['all'], array $params = [])
     {
         $this->prepareFields($fields, \FacebookAds\Object\AdAccount::class);
         $response = $this->user->getAdAccounts($fields, $params);

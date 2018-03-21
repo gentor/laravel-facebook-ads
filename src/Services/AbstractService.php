@@ -4,8 +4,10 @@ namespace Gentor\LaravelFacebookAds\Services;
 
 use FacebookAds\Cursor;
 use FacebookAds\Object\AbstractCrudObject;
+use FacebookAds\Object\AbstractObject;
 use FacebookAds\Object\Fields\AdAccountFields;
 use FacebookAds\Object\Fields\AdSetFields;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
@@ -19,19 +21,45 @@ abstract class AbstractService
      */
     public $facebookObject;
 
+    protected $facebookClass;
+
     /**
-     * @param string $name
+     * AdAccount constructor.
+     * @param $node
+     */
+    public function __construct($node = null)
+    {
+        if ($node instanceof $this->facebookClass) {
+            $node = $node->id;
+        }
+
+        $this->facebookObject = new $this->facebookClass($node);
+    }
+
+    /**
+     * @param string $key
      * @return mixed
      * @throws \InvalidArgumentException
      */
-    public function __get($name)
+    public function __get($key)
     {
-        if (array_key_exists($name, $this->facebookObject->getData())) {
-            return $this->facebookObject->getData()[$name];
-        } else {
-            throw new \InvalidArgumentException(
-                $name . ' is not a field of ' . get_class($this));
+        $data = $this->getData();
+        if (Arr::exists($data, $key)) {
+            return $data[$key];
         }
+
+        return null;
+    }
+
+    /**
+     * Get an item from the data using "dot" notation.
+     *
+     * @param $item
+     * @return mixed
+     */
+    public function get($item)
+    {
+        return Arr::get(Arr::dot($this->toArray()), $item);
     }
 
     /**
@@ -47,7 +75,8 @@ abstract class AbstractService
      */
     public function loadInfo()
     {
-        $this->facebookObject = $this->read();
+//        $this->facebookObject = $this->read();
+        $this->populateData($this->read());
 
         return $this;
     }
@@ -85,7 +114,10 @@ abstract class AbstractService
             if (!$class) {
                 $data->push($response->current());
             } else {
-                $data->push(new $class($response->current()));
+                /** @var AbstractService $object */
+                $object = new $class($response->current());
+                $object->populateData($response->current());
+                $data->push($object);
             }
 //            $data->push($response->current()->getData());
             $response->next();
@@ -95,8 +127,21 @@ abstract class AbstractService
     }
 
     /**
+     * @return mixed
+     */
+    public function toArray()
+    {
+        $data = clone $this;
+        unset($data->facebookObject);
+        $array = json_decode(json_encode($data), true);
+        unset($data);
+
+        return $array;
+    }
+
+    /**
      * @param $fields
-     * @param string:null $class
+     * @param string :null $class
      */
     protected function prepareFields(&$fields, $class = null)
     {
@@ -112,6 +157,41 @@ abstract class AbstractService
                     AdSetFields::DAILY_IMPS,
                 ]);
             });
+        }
+    }
+
+    /**
+     * @param $array
+     * @return array
+     */
+    protected function flattenData($array)
+    {
+        return array_map(function ($value) {
+            if (!is_array($value)) {
+                return $value;
+            }
+
+            $data = [];
+            foreach ($value AS $item) {
+                if (is_array($item) && !is_array(Arr::first($item))) {
+                    $data[Arr::first($item)] = Arr::last($item);
+                } else {
+                    $data = $value;
+                }
+            }
+
+            return $data;
+        }, $array);
+    }
+
+    /**
+     * @param AbstractObject $object
+     */
+    protected function populateData(AbstractObject $object)
+    {
+        $data = $this->flattenData($object->exportAllData());
+        foreach ($data as $key => $item) {
+            $this->{$key} = json_decode(json_encode($item));
         }
     }
 }

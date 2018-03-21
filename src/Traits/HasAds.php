@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 
 /**
  * Trait HasAds
-
  * @property \FacebookAds\Object\AdAccount $facebookObject
  * @package Gentor\LaravelFacebookAds\Traits
  */
