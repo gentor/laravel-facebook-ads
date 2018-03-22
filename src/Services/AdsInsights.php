@@ -18,5 +18,9 @@ class AdsInsights extends AbstractService
     public function __construct($insights = null)
     {
         $this->facebookObject = new $this->facebookClass();
+
+        if ($insights instanceof $this->facebookClass) {
+            $this->populateData($insights);
+        }
     }
 }

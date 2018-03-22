@@ -39,6 +39,7 @@ class AdAccounts extends AbstractService
     public function all(array $fields = ['all'], array $params = [])
     {
         $this->prepareFields($fields, \FacebookAds\Object\AdAccount::class);
+        $this->prepareParams($params);
         $response = $this->user->getAdAccounts($fields, $params);
 
         return $this->response($response, AdAccount::class);

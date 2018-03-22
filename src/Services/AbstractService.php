@@ -19,9 +19,13 @@ abstract class AbstractService
     /**
      * @var AbstractCrudObject
      */
-    public $facebookObject;
+    protected $facebookObject;
 
     protected $facebookClass;
+
+    protected $params = [
+        'limit' => 50,
+    ];
 
     /**
      * AdAccount constructor.
@@ -30,6 +34,7 @@ abstract class AbstractService
     public function __construct($node = null)
     {
         if ($node instanceof $this->facebookClass) {
+            $this->populateData($node);
             $node = $node->id;
         }
 
@@ -91,6 +96,7 @@ abstract class AbstractService
     public function read(array $fields = ['all'], array $params = [])
     {
         $this->prepareFields($fields);
+        $this->prepareParams($params);
 
         return $this->facebookObject->read($fields, $params);
     }
@@ -106,20 +112,13 @@ abstract class AbstractService
     {
         $data = new Collection();
 
-        while ($response->getNext()) {
-            $response->fetchAfter();
-        }
-
         while ($response->current()) {
             if (!$class) {
                 $data->push($response->current());
             } else {
-                /** @var AbstractService $object */
-                $object = new $class($response->current());
-                $object->populateData($response->current());
-                $data->push($object);
+                $data->push(new $class($response->current()));
             }
-//            $data->push($response->current()->getData());
+
             $response->next();
         }
 
@@ -146,7 +145,7 @@ abstract class AbstractService
     protected function prepareFields(&$fields, $class = null)
     {
         if (!$class) {
-            $class = get_class($this->facebookObject);
+            $class = $this->facebookClass;
         }
 
         if (isset($fields[0]) && 'all' == $fields[0]) {
@@ -158,6 +157,11 @@ abstract class AbstractService
                 ]);
             });
         }
+    }
+
+    protected function prepareParams(&$params)
+    {
+        $params = array_merge($this->params, $params);
     }
 
     /**
@@ -189,9 +193,13 @@ abstract class AbstractService
      */
     protected function populateData(AbstractObject $object)
     {
-        $data = $this->flattenData($object->exportAllData());
+        $data = $this->flattenData($object->getData());
         foreach ($data as $key => $item) {
-            $this->{$key} = json_decode(json_encode($item));
+            if ('insights' == $key && $insights = $item['data'][0] ?? false) {
+                $this->{$key} = json_decode(json_encode($this->flattenData($insights)));
+            } else {
+                $this->{$key} = json_decode(json_encode($item));
+            }
         }
     }
 }

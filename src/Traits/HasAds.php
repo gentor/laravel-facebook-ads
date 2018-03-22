@@ -24,10 +24,9 @@ trait HasAds
     public function ads($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\Ad::class);
+        $this->prepareParams($params);
         $response = $this->facebookObject->getAds($fields, $params, $pending);
 
         return $this->response($response, Ad::class);
     }
-
-
 }

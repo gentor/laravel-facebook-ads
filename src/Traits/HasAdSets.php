@@ -24,6 +24,7 @@ trait HasAdSets
     public function adSets($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\AdSet::class);
+        $this->prepareParams($params);
         $response = $this->facebookObject->getAdSets($fields, $params, $pending);
 
         return $this->response($response, AdSet::class);

@@ -24,8 +24,24 @@ trait HasInsights
     public function insights($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\AdsInsights::class);
+
+        if ($key = array_first(array_keys($fields, 'insights'))) {
+            unset($fields[$key]);
+        }
         $response = $this->facebookObject->getInsights($fields, $params, $pending);
 
         return $this->response($response, AdsInsights::class);
+    }
+
+    /**
+     * @param $fields
+     * @param string :null $class
+     */
+    protected function prepareFields(&$fields, $class = null)
+    {
+        parent::prepareFields($fields, $class);
+        $insightsFields = \FacebookAds\Object\AdsInsights::getFields();
+        $insightsFields = implode(',', $insightsFields);
+        $fields[] = "insights{{$insightsFields}}";
     }
 }

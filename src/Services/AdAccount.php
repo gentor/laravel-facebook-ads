@@ -5,6 +5,7 @@ namespace Gentor\LaravelFacebookAds\Services;
 use Gentor\LaravelFacebookAds\Traits\HasAds;
 use Gentor\LaravelFacebookAds\Traits\HasAdSets;
 use Gentor\LaravelFacebookAds\Traits\HasInsights;
+use Gentor\LaravelFacebookAds\Traits\Summary;
 use Illuminate\Support\Collection;
 
 
@@ -34,13 +35,15 @@ class AdAccount extends AbstractService
      * @param string[] $fields Fields to request
      * @param array $params Additional request parameters
      * @param bool $pending
-     * @return Collection
+     * @return Collection|AdAccount[]
      *
      * @see https://developers.facebook.com/docs/marketing-api/reference/ad-account/campaigns/
      */
     public function campaigns($fields = ['all'], array $params = [], $pending = false)
     {
         $this->prepareFields($fields, \FacebookAds\Object\Campaign::class);
+        $this->prepareParams($params);
+//        $params = array_merge(['default_summary' => true], $params);
         $response = $this->facebookObject->getCampaigns($fields, $params, $pending);
 
         return $this->response($response, Campaign::class);
