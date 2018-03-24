@@ -36,10 +36,15 @@ class FacebookAds
     }
 
     /**
-     * @return \Gentor\LaravelFacebookAds\Services\AdAccounts
+     * @param array $fields
+     * @param array $params
+     * @return \Illuminate\Support\Collection
      */
-    public function adAccounts()
+    public function adAccounts(array $fields = ['all'], array $params = [])
     {
-        return new AdAccounts($this->facebookUserId);
+        $adAccounts = new AdAccount();
+        $adAccounts->setUser($this->facebookUserId);
+
+        return $adAccounts->all($fields, $params);
     }
 }

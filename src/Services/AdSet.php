@@ -9,7 +9,7 @@ use Gentor\LaravelFacebookAds\Traits\HasInsights;
 /**
  * Class AdSet
  *
- * @property \FacebookAds\Object\AdSet $facebookObject
+ * @property int|string $facebookObjectId
  * @package Gentor\LaravelFacebookAds\Services
  */
 class AdSet extends AbstractService

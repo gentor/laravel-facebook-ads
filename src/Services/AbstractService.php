@@ -19,10 +19,16 @@ abstract class AbstractService
     /**
      * @var AbstractCrudObject
      */
-    protected $facebookObject;
+    protected $facebookObjectId;
 
+    /**
+     * @var
+     */
     protected $facebookClass;
 
+    /**
+     * @var array
+     */
     protected $params = [
         'limit' => 50,
     ];
@@ -38,7 +44,7 @@ abstract class AbstractService
             $node = $node->id;
         }
 
-        $this->facebookObject = new $this->facebookClass($node);
+        $this->facebookObjectId = $node;
     }
 
     /**
@@ -68,11 +74,19 @@ abstract class AbstractService
     }
 
     /**
+     * @return AbstractCrudObject
+     */
+    public function facebookObject()
+    {
+        return new $this->facebookClass($this->facebookObjectId);
+    }
+
+    /**
      * @return array
      */
     public function getData()
     {
-        return $this->facebookObject->getData();
+        return $this->facebookObject()->getData();
     }
 
     /**
@@ -98,7 +112,7 @@ abstract class AbstractService
         $this->prepareFields($fields);
         $this->prepareParams($params);
 
-        return $this->facebookObject->read($fields, $params);
+        return $this->facebookObject()->read($fields, $params);
     }
 
     /**
@@ -131,7 +145,6 @@ abstract class AbstractService
     public function toArray()
     {
         $data = clone $this;
-        unset($data->facebookObject);
         $array = json_decode(json_encode($data), true);
         unset($data);
 
@@ -159,6 +172,9 @@ abstract class AbstractService
         }
     }
 
+    /**
+     * @param $params
+     */
     protected function prepareParams(&$params)
     {
         $params = array_merge($this->params, $params);

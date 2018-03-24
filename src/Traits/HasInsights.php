@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 
 /**
  * Trait HasInsights
- * @property \FacebookAds\Object\AdAccount $facebookObject
  * @package Gentor\LaravelFacebookAds\Traits
  */
 trait HasInsights
@@ -28,7 +27,7 @@ trait HasInsights
         if ($key = array_first(array_keys($fields, 'insights'))) {
             unset($fields[$key]);
         }
-        $response = $this->facebookObject->getInsights($fields, $params, $pending);
+        $response = $this->facebookObject()->getInsights($fields, $params, $pending);
 
         return $this->response($response, AdsInsights::class);
     }

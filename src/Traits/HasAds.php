@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 
 /**
  * Trait HasAds
- * @property \FacebookAds\Object\AdAccount $facebookObject
  * @package Gentor\LaravelFacebookAds\Traits
  */
 trait HasAds
@@ -25,7 +24,7 @@ trait HasAds
     {
         $this->prepareFields($fields, \FacebookAds\Object\Ad::class);
         $this->prepareParams($params);
-        $response = $this->facebookObject->getAds($fields, $params, $pending);
+        $response = $this->facebookObject()->getAds($fields, $params, $pending);
 
         return $this->response($response, Ad::class);
     }

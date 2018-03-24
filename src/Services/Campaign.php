@@ -11,7 +11,7 @@ use Gentor\LaravelFacebookAds\Traits\Summary;
 /**
  * Class Campaign
  *
- * @property \FacebookAds\Object\Campaign $facebookObject
+ * @property int|string $facebookObjectId
  * @package Gentor\LaravelFacebookAds\Services
  */
 class Campaign extends AbstractService
