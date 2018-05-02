@@ -165,6 +165,7 @@ abstract class AbstractService
             /** @var AbstractCrudObject $class */
             $fields = array_filter($class::getFields(), function ($value) {
                 return !in_array($value, [
+                    AdAccountFields::EXTENDED_CREDIT_INVOICE_GROUP,
                     AdAccountFields::SHOW_CHECKOUT_EXPERIENCE,
                     AdSetFields::DAILY_IMPS,
                 ]);
